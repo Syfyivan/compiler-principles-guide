@@ -1,0 +1,1372 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>编译原理例题与练习题答案解析</title>
+  <style>
+    :root { --bg:#f7f4ee; --paper:#fffdf8; --ink:#202124; --muted:#626866; --line:#ded8cb; --teal:#0f766e; --teal-soft:#d7f0eb; --blue-soft:#dbeafe; --amber-soft:#fdecc8; --shadow:0 16px 35px rgba(32,33,36,.09); --radius:8px; }
+    * { box-sizing:border-box; } html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:linear-gradient(180deg,rgba(255,253,248,.94),rgba(247,244,238,.98)),repeating-linear-gradient(90deg,rgba(15,118,110,.05) 0 1px,transparent 1px 48px); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; line-height:1.72; letter-spacing:0; }
+    a { color:#0f5f59; text-decoration:none; font-weight:700; } a:hover { text-decoration:underline; }
+    .topbar { position:sticky; top:0; z-index:20; border-bottom:1px solid var(--line); background:rgba(255,253,248,.94); backdrop-filter:blur(14px); }
+    .topbar-inner { max-width:1180px; margin:0 auto; padding:12px 20px; display:flex; gap:12px; align-items:center; justify-content:space-between; }
+    .brand { display:flex; gap:12px; align-items:center; color:inherit; } .mark { width:36px; height:36px; display:grid; place-items:center; border:2px solid var(--ink); background:var(--amber-soft); font-weight:800; }
+    .brand strong { display:block; line-height:1.15; } .brand span span { display:block; color:var(--muted); font-size:12px; font-weight:400; }
+    .top-link { min-height:38px; display:inline-flex; align-items:center; border:1px solid rgba(15,118,110,.28); border-radius:999px; padding:7px 12px; background:#fff; color:#0f5f59; font-size:14px; font-weight:700; text-decoration:none; }
+    .page { max-width:1180px; margin:0 auto; padding:28px 20px 72px; }
+    .hero { background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:30px; margin-bottom:18px; }
+    .eyebrow { display:inline-flex; min-height:28px; padding:3px 9px; border:1px solid rgba(15,118,110,.22); background:var(--teal-soft); color:#0f5f59; border-radius:999px; font-size:12px; font-weight:800; }
+    h1 { margin:14px 0 8px; font-size:34px; line-height:1.18; } .lead { color:#4b5563; max-width:76ch; margin:0; }
+    .answer-shell { display:grid; grid-template-columns:260px minmax(0,1fr); gap:18px; align-items:start; }
+    .answer-tabs { position:sticky; top:74px; display:grid; gap:8px; padding:12px; background:rgba(255,253,248,.96); border:1px solid var(--line); border-radius:var(--radius); box-shadow:0 8px 22px rgba(32,33,36,.06); }
+    .answer-tab { width:100%; border:0; border-radius:6px; padding:9px 10px; background:transparent; color:#374151; text-align:left; font:inherit; font-size:14px; line-height:1.35; cursor:pointer; }
+    .answer-tab:hover { background:var(--blue-soft); } .answer-tab.is-active { background:var(--teal-soft); color:#064e3b; font-weight:800; }
+    .answer-content { min-width:0; } .answer-panel { display:none; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:0 8px 22px rgba(32,33,36,.06); padding:24px; min-width:0; }
+    .answer-panel.is-active { display:block; } .answer-panel h2 { margin:0 0 12px; font-size:26px; line-height:1.2; } .answer-panel h3 { margin:22px 0 8px; font-size:18px; line-height:1.35; } .answer-panel h4 { margin:18px 0 8px; } .answer-panel p { margin:8px 0; }
+    .answer-panel img { display:block; max-width:100%; height:auto; margin:12px 0 14px; border:1px solid var(--line); border-radius:var(--radius); background:#fff; box-shadow:0 8px 18px rgba(32,33,36,.08); }
+    pre { margin:12px 0; padding:12px 14px; overflow-x:auto; background:#101827; color:#e5e7eb; border-radius:var(--radius); line-height:1.65; } code { font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace; } :not(pre)>code { background:#eef2ff; color:#3730a3; padding:1px 4px; border-radius:4px; }
+    table { width:100%; border-collapse:collapse; margin:12px 0; background:#fff; } th,td { border:1px solid var(--line); padding:8px 10px; vertical-align:top; } th { background:#f1f7f5; text-align:left; } blockquote { margin:12px 0; padding:10px 14px; border-left:4px solid var(--teal); background:#f1f7f5; color:#334155; } hr { border:0; border-top:1px solid var(--line); margin:24px 0; }
+    html.embedded body { background: transparent; }
+    html.embedded .topbar,
+    html.embedded .hero { display: none; }
+    html.embedded .page { max-width: none; padding: 0; }
+    html.embedded .answer-tabs { top: 0; }
+    html.embedded .answer-panel { box-shadow: none; }
+    @media (max-width:900px) { .answer-shell { grid-template-columns:1fr; } .answer-tabs { position:static; display:flex; overflow-x:auto; } .answer-tab { width:auto; flex:0 0 auto; white-space:nowrap; } .topbar-inner { align-items:flex-start; flex-direction:column; } }
+    @media print { .topbar,.answer-tabs { display:none; } .page { max-width:none; padding:0; } .answer-shell { display:block; } .answer-panel { display:block; box-shadow:none; border:0; page-break-after:always; } body { background:#fff; } }
+  </style>
+  <script>
+    if (location.search.includes("embed=1") || window.self !== window.top) {
+      document.documentElement.classList.add("embedded");
+    }
+  </script>
+</head>
+<body>
+  <header class="topbar"><div class="topbar-inner"><a class="brand" href="#top" aria-label="回到顶部"><span class="mark">QA</span><span><strong>编译原理例题答案</strong><span>章节 tab + 课件截图 + 解题解析</span></span></a><a class="top-link" href="index.html#answers">返回导读页</a></div></header>
+  <main class="page" id="top">
+    <section class="hero"><span class="eyebrow">答案解析版</span><h1>例题与练习题答案解析</h1><p class="lead">按章节切换查看。图片题已嵌入课件截图；文字题给出标准答案、解题步骤和易错点。打印时会展开全部章节。</p><div class="intro"><h1 id="编译原理例题与练习题答案解析">编译原理例题与练习题答案解析</h1>
+<p>本文件是 <code>编译原理例题与练习题整理.md</code> 的答案版。<br />
+截图放在
+<code>assets/例题截图/</code>，主要覆盖原课件中依赖语法树、DFA、表格、DAG、活动记录等图片才能看清的题。</p>
+<p>说明：部分课件例题本身是“方法演示”而不是完整题目，我把它们整理为“答案要点
++ 解析”，方便直接复习。</p>
+<hr />
+</div></section>
+    <section class="answer-shell" aria-label="例题答案章节切换"><nav class="answer-tabs" aria-label="答案章节"><button class="answer-tab is-active" type="button" data-target="第-1-章-引论">第 1 章 引论</button>
+<button class="answer-tab" type="button" data-target="第-2-章-高级语言及其文法">第 2 章 高级语言及其文法</button>
+<button class="answer-tab" type="button" data-target="第-3-章-词法分析">第 3 章 词法分析</button>
+<button class="answer-tab" type="button" data-target="第-4-章-自顶向下语法分析">第 4 章 自顶向下语法分析</button>
+<button class="answer-tab" type="button" data-target="第-5-章-自底向上语法分析">第 5 章 自底向上语法分析</button>
+<button class="answer-tab" type="button" data-target="第-6-章-语法制导翻译与属性文法">第 6 章 语法制导翻译与属性文法</button>
+<button class="answer-tab" type="button" data-target="第-7-章-语义分析与中间代码生成">第 7 章 语义分析与中间代码生成</button>
+<button class="answer-tab" type="button" data-target="第-8-章-符号表管理">第 8 章 符号表管理</button>
+<button class="answer-tab" type="button" data-target="第-9-章-运行时存储组织">第 9 章 运行时存储组织</button>
+<button class="answer-tab" type="button" data-target="第-10-章-代码优化">第 10 章 代码优化</button>
+<button class="answer-tab" type="button" data-target="第-11-章-代码生成">第 11 章 代码生成</button>
+<button class="answer-tab" type="button" data-target="总题型答案模板">总题型答案模板</button></nav><div class="answer-content"><article class="answer-panel is-active" id="panel-1" data-panel="第-1-章-引论" tabindex="0"><h2 id="第-1-章-引论">第 1 章 引论</h2>
+<h3 id="1-sum1020numsquare-的词法分析">1.
+<code>sum=(10+20)*(num+square);</code> 的词法分析</h3>
+<p><img src="assets/例题截图/ch1-token-sum.png"
+alt="第1章 token 示例" /></p>
+<p>答案：</p>
+<pre class="text"><code>(标识符, sum)
+(赋值号, =)
+(左括号, ()
+(整常数, 10)
+(加号, +)
+(整常数, 20)
+(右括号, ))
+(乘号, *)
+(左括号, ()
+(标识符, num)
+(加号, +)
+(标识符, square)
+(右括号, ))
+(分号, ;)</code></pre>
+<p>解析：词法分析只负责把字符流切成单词符号，不负责判断表达式优先级。标识符的属性值通常是名字本身或符号表入口，常数的属性值是数值。</p>
+<h3 id="2-sum1020numsquare-的中间表示">2.
+<code>sum=(10+20)*(num+square);</code> 的中间表示</h3>
+<p>一种三地址码/四元式思路：</p>
+<pre class="text"><code>t1 := 10 + 20
+t2 := num + square
+t3 := t1 * t2
+sum := t3</code></pre>
+<p>后缀式：</p>
+<pre class="text"><code>sum 10 20 + num square + * =</code></pre>
+<p>前缀式：</p>
+<pre class="text"><code>= sum * + 10 20 + num square</code></pre>
+<p>四元式：</p>
+<pre class="text"><code>(+, 10, 20, t1)
+(+, num, square, t2)
+(*, t1, t2, t3)
+(=, t3, -, sum)</code></pre>
+<p>解析：中间代码要显式表达计算顺序。括号决定先算 <code>10+20</code> 和
+<code>num+square</code>，再乘，最后赋值。</p>
+<h3 id="3-机器语言汇编语言高级语言对照">3.
+机器语言、汇编语言、高级语言对照</h3>
+<p>答案要点：</p>
+<ul>
+<li>机器语言：机器可直接执行，二进制编码，可读性差。</li>
+<li>汇编语言：用助记符表示机器指令，仍然依赖具体机器。</li>
+<li>高级语言：接近问题描述，需经编译或解释才能执行。</li>
+</ul>
+<p>解析：这一题通常考“为什么需要编译器”。高级语言提高表达能力，编译器负责把它翻译成目标机能执行的低级代码。</p>
+<h3 id="4-t-形图自展移植">4. T 形图、自展、移植</h3>
+<p><img src="assets/例题截图/ch1-t-diagram.png" alt="第1章 T形图" /></p>
+<p>答案要点：</p>
+<ul>
+<li>T
+形图上方左边是源语言，右边是目标语言，下方是实现该编译器所用语言。</li>
+<li>自展：先实现一个小语言子集编译器，再用它编译更完整的编译器。</li>
+<li>移植：已有 A 机上的编译环境时，用高级语言写 B 机目标编译器，再在 A
+机上交叉编译出可在 B 机运行的编译器。</li>
+</ul>
+<p>解析：T
+图题核心是分清“编译器运行在哪台机器上”“输入语言是什么”“输出目标语言是什么”。</p>
+<h3 id="5-解释程序编译程序等概念辨析">5.
+解释程序、编译程序等概念辨析</h3>
+<p>答案：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>源程序</th>
+<th>目标/结果</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>解释程序</td>
+<td>高级语言</td>
+<td>直接执行结果</td>
+<td>边解释边执行</td>
+</tr>
+<tr>
+<td>编译程序</td>
+<td>高级语言</td>
+<td>汇编/机器目标程序</td>
+<td>先整体翻译再执行</td>
+</tr>
+<tr>
+<td>汇编程序</td>
+<td>汇编语言</td>
+<td>机器语言</td>
+<td>助记符到机器码</td>
+</tr>
+<tr>
+<td>交叉编译程序</td>
+<td>高级语言</td>
+<td>另一台机器的目标代码</td>
+<td>编译器运行机与目标机不同</td>
+</tr>
+<tr>
+<td>反编译程序</td>
+<td>低级代码</td>
+<td>较高级表示</td>
+<td>机器/字节码反向恢复</td>
+</tr>
+</tbody>
+</table>
+<p>解析：考试常见问法是“源语言和目标语言分别是什么”。</p>
+<hr />
+</article>
+<article class="answer-panel" id="panel-2" data-panel="第-2-章-高级语言及其文法" tabindex="0"><h2 id="第-2-章-高级语言及其文法">第 2 章 高级语言及其文法</h2>
+<h3 id="1-字母表乘积与幂">1. 字母表乘积与幂</h3>
+<p>答案：</p>
+<pre class="text"><code>Σ1={0,1}, Σ2={a,b}
+Σ1Σ2={0a,0b,1a,1b}
+
+{0,1}^3={000,001,010,011,100,101,110,111}</code></pre>
+<p>解析：字母表乘积是从前一个集合取一个字符、后一个集合取一个字符并置。<code>Σ^n</code>
+是长度为 <code>n</code> 的所有串。</p>
+<h3 id="2-正闭包与-kleene-闭包">2. 正闭包与 Kleene 闭包</h3>
+<p>答案：</p>
+<pre class="text"><code>{0,1}+ = 所有长度 &gt;= 1 的二进制串
+{0,1}* = 所有长度 &gt;= 0 的二进制串 = {ε} ∪ {0,1}+</code></pre>
+<p>解析：<code>+</code> 不含空串，<code>*</code> 含空串。</p>
+<h3 id="3-例-29赋值语句文法">3. 例 2.9：赋值语句文法</h3>
+<p><img src="assets/例题截图/ch2-grammar-assignment.png"
+alt="第2章 赋值语句文法" /></p>
+<p>答案：</p>
+<pre class="text"><code>G = (V, T, P, S)
+V = {A, B, E, C, D, O}
+T = {a, b, c, m[1], m[2], m[3], +, -, =}
+S = A
+
+P:
+A → B = E
+B → C | D
+C → a | b | c
+D → m[1] | m[2] | m[3]
+E → C O C | C O D | D O C | D O D
+O → + | -</code></pre>
+<p>解析：<code>A</code> 表示赋值语句，<code>B</code>
+表示左部量，<code>E</code> 表示右部表达式，<code>C/D/O</code>
+分别表示简单变量、下标变量、运算符。</p>
+<h3 id="4-证明-abm1-是文法-g1-的句子">4. 证明 <code>a=b+m[1]</code>
+是文法 <code>G1</code> 的句子</h3>
+<p>答案：</p>
+<pre class="text"><code>A ⇒ B=E
+  ⇒ C=E
+  ⇒ a=E
+  ⇒ a=C O D
+  ⇒ a=b O D
+  ⇒ a=b + D
+  ⇒ a=b+m[1]</code></pre>
+<p>解析：只要能从开始符号推出一个全由终结符组成的串，该串就是文法的句子。</p>
+<h3 id="5-判断文法类型">5. 判断文法类型</h3>
+<p><img src="assets/例题截图/ch2-grammar-type.png"
+alt="第2章 文法类型判断" /></p>
+<p>答案规则：</p>
+<ul>
+<li>0 型：产生式基本无限制，左部至少含一个非终结符。</li>
+<li>1 型：一般满足
+<code>|左部| &lt;= |右部|</code>，除开始符号推出空串的特殊情况。</li>
+<li>2 型 CFG：每个产生式左部是单个非终结符。</li>
+<li>3 型正则文法：右线性 <code>A→aB|a</code> 或左线性
+<code>A→Ba|a</code>，不能混用方向。</li>
+</ul>
+<p>解析：做题时从最严格的 3 型开始判断；不满足再看 2 型、1 型、0
+型。</p>
+<h3 id="6-0123456-的左线性和右线性文法">6. <code>{0123456}</code>
+的左线性和右线性文法</h3>
+<p>答案：</p>
+<p>右线性：</p>
+<pre class="text"><code>S → 0A
+A → 1B
+B → 2C
+C → 3D
+D → 4E
+E → 5F
+F → 6</code></pre>
+<p>左线性：</p>
+<pre class="text"><code>S → A6
+A → B5
+B → C4
+C → D3
+D → E2
+E → F1
+F → 0</code></pre>
+<p>解析：右线性从左往右“预留后续状态”；左线性从右往左构造。</p>
+<h3 id="7-ididid-的语法树最左最右推导">7. <code>id+id*id</code>
+的语法树、最左/最右推导</h3>
+<p><img src="assets/例题截图/ch2-id-tree.png"
+alt="第2章 id+id*id 语法树" /></p>
+<p>以文法 <code>E→E+E|E*E|(E)|id</code> 为例，一条最左推导：</p>
+<pre class="text"><code>E ⇒ E+E
+  ⇒ id+E
+  ⇒ id+E*E
+  ⇒ id+id*E
+  ⇒ id+id*id</code></pre>
+<p>一条最右推导：</p>
+<pre class="text"><code>E ⇒ E+E
+  ⇒ E+E*E
+  ⇒ E+E*id
+  ⇒ E+id*id
+  ⇒ id+id*id</code></pre>
+<p>解析：同一棵语法树可能对应不同推导顺序；但如果同一句子能有两棵不同语法树，则文法二义。</p>
+<h3 id="8-短语直接短语句柄">8. 短语、直接短语、句柄</h3>
+<p><img src="assets/例题截图/ch2-phrase-handle.png"
+alt="第2章 短语句柄" /></p>
+<p>对句型 <code>a1+a2*a3</code> 的典型答案：</p>
+<ul>
+<li>短语：<code>a1</code>、<code>a2</code>、<code>a3</code>、<code>a2*a3</code>、<code>a1+a2*a3</code>。</li>
+<li>直接短语：叶子直接由某个非终结符一步推出的部分，如
+<code>a1</code>、<code>a2</code>、<code>a3</code>。</li>
+<li>句柄：当前句型的最左直接短语。</li>
+</ul>
+<p>解析：短语对应语法树中某棵子树的叶子串；直接短语对应高度为 1
+的子树；句柄是自底向上分析下一步要归约的对象。</p>
+<h3 id="9-二义性证明eeeeeeid">9.
+二义性证明：<code>E→E+E|E*E|(E)|id</code></h3>
+<p><img src="assets/例题截图/ch2-ambiguity.png"
+alt="第2章 二义性" /></p>
+<p>答案：句子 <code>id+id*id</code> 有两种结构：</p>
+<pre class="text"><code>id + (id * id)
+(id + id) * id</code></pre>
+<p>对应两棵不同语法树，因此该文法二义。</p>
+<p>解析：证明二义性不能只说“看起来有歧义”，必须给出一个具体句子，并展示两棵树或两条不同最左推导。</p>
+<h3 id="10-消除表达式二义性">10. 消除表达式二义性</h3>
+<p>答案：</p>
+<pre class="text"><code>E → E + T | T
+T → T * F | F
+F → id | (E)</code></pre>
+<p>解析：把优先级低的 <code>+</code> 放在较高层
+<code>E</code>，把优先级高的 <code>*</code> 放在较低层
+<code>T</code>，使 <code>*</code> 更先结合。</p>
+<h3 id="11-语言构造练习答案">11. 语言构造练习答案</h3>
+<ol type="1">
+<li>以 <code>a</code> 开头、以 <code>b</code> 结尾，字母表
+<code>{a,b,c}</code>：</li>
+</ol>
+<pre class="text"><code>S → a M b
+M → aM | bM | cM | ε</code></pre>
+<ol start="2" type="1">
+<li>二进制偶数：</li>
+</ol>
+<pre class="text"><code>S → B0
+B → 0B | 1B | ε</code></pre>
+<p>若不允许多位数前导 0，可另设
+<code>S→0|1C0</code>，<code>C→0C|1C|ε</code>。</p>
+<ol start="3" type="1">
+<li>长度至少 2 的十进制数字串：</li>
+</ol>
+<pre class="text"><code>S → D D T
+T → D T | ε
+D → 0|1|2|3|4|5|6|7|8|9</code></pre>
+<ol start="4" type="1">
+<li>不包含 <code>00</code> 的二进制串：</li>
+</ol>
+<pre class="text"><code>S → 1S | 0A | ε
+A → 1S | ε</code></pre>
+<ol start="5" type="1">
+<li><code>a^n b^n</code>：</li>
+</ol>
+<pre class="text"><code>S → a S b | ε       // n&gt;=0
+S → a S b | ab      // n&gt;=1</code></pre>
+<ol start="6" type="1">
+<li><code>a^n b^n c^m</code>：</li>
+</ol>
+<pre class="text"><code>S → T C
+T → a T b | ε
+C → c C | ε</code></pre>
+<ol start="7" type="1">
+<li>括号匹配：</li>
+</ol>
+<pre class="text"><code>S → (S)S | ε</code></pre>
+<ol start="8" type="1">
+<li><code>{a,b}</code> 上回文串：</li>
+</ol>
+<pre class="text"><code>S → aSa | bSb | a | b | ε</code></pre>
+<p>解析：格式题靠“前缀/中间/后缀”，数量配对和嵌套题靠递归。</p>
+<hr />
+</article>
+<article class="answer-panel" id="panel-3" data-panel="第-3-章-词法分析" tabindex="0"><h2 id="第-3-章-词法分析">第 3 章 词法分析</h2>
+<h3 id="1-例-31if-count7-then-result--314">1. 例
+3.1：<code>if count&gt;7 then result := 3.14;</code></h3>
+<p><img src="assets/例题截图/ch3-token-if.png"
+alt="第3章 token 示例" /></p>
+<p>答案：</p>
+<pre class="text"><code>(IF, -)
+(ID, count 的符号表入口)
+(RELOP, &gt;)
+(NUM, 7)
+(THEN, -)
+(ID, result 的符号表入口)
+(ASSIGN, :=)
+(REAL, 3.14)
+(SEMI, ;)</code></pre>
+<p>解析：关键字一般一符一类；标识符属性值指向符号表；常数属性值保存转换后的数值。</p>
+<h3 id="2-标识符文法与正则式">2. 标识符文法与正则式</h3>
+<p>答案：</p>
+<pre class="text"><code>id → letter rest
+rest → letter rest | digit rest | ε
+letter → A|...|Z|a|...|z
+digit → 0|1|...|9</code></pre>
+<p>正则式：</p>
+<pre class="text"><code>letter(letter|digit)*</code></pre>
+<p>解析：标识符必须以字母开头，后续可以是字母或数字。</p>
+<h3 id="3-正则文法转正则表达式">3. 正则文法转正则表达式</h3>
+<p><img src="assets/例题截图/ch3-regex-to-grammar.png"
+alt="第3章 正则文法转正则式" /></p>
+<p>方法答案：为每个非终结符列一个语言方程，用 Arden 引理消元。</p>
+<p>解析示例：</p>
+<pre class="text"><code>S = aS ∪ aB
+可化为 S = a* aB = a+ B</code></pre>
+<p>后续继续把 <code>B</code>、<code>C</code>
+方程代入并化简。考试中写清“列方程 -&gt; 消元 -&gt;
+得正则式”即可拿步骤分。</p>
+<h3 id="4-正则式-aab-转右线性文法">4. 正则式 <code>a(a|b)*</code>
+转右线性文法</h3>
+<p>答案：</p>
+<pre class="text"><code>S → aA
+A → aA | bA | ε</code></pre>
+<p>解析：<code>S→aA</code> 保证首字符为 <code>a</code>，<code>A</code>
+递归生成任意多个 <code>a/b</code>。</p>
+<h3 id="5-奇偶-dfa0-和-1-的个数都是偶数">5. 奇偶 DFA：0 和 1
+的个数都是偶数</h3>
+<p><img src="assets/例题截图/ch3-dfa-even.png"
+alt="第3章 偶数个0和1的DFA" /></p>
+<p>答案：设状态表示 <code>(0 的奇偶, 1 的奇偶)</code>：</p>
+<pre class="text"><code>q00 = 偶0偶1    // 初态、终态
+q01 = 偶0奇1
+q10 = 奇0偶1
+q11 = 奇0奇1</code></pre>
+<p>转移表：</p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>读 0</th>
+<th>读 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>q00</td>
+<td>q10</td>
+<td>q01</td>
+</tr>
+<tr>
+<td>q10</td>
+<td>q00</td>
+<td>q11</td>
+</tr>
+<tr>
+<td>q01</td>
+<td>q11</td>
+<td>q00</td>
+</tr>
+<tr>
+<td>q11</td>
+<td>q01</td>
+<td>q10</td>
+</tr>
+</tbody>
+</table>
+<p>解析：读到 <code>0</code> 翻转 0 的奇偶性，读到 <code>1</code> 翻转 1
+的奇偶性。</p>
+<h3 id="6-正则式-ε01010-的状态转换图">6. 正则式
+<code>ε|(0|1)01*|0+</code> 的状态转换图</h3>
+<p><img src="assets/例题截图/ch3-regex-graph.png"
+alt="第3章 正则式到状态转换图" /></p>
+<p>答案要点：</p>
+<ul>
+<li><code>ε</code>：开始状态可通过空边到终态，或开始状态本身为终态。</li>
+<li><code>(0|1)01*</code>：先读 <code>0</code> 或 <code>1</code>，再读
+<code>0</code>，再读任意多个 <code>1</code>。</li>
+<li><code>0+</code>：至少一个 <code>0</code>，后续任意多个
+<code>0</code>。</li>
+</ul>
+<p>解析：整体是并集，用一个新开始状态通过 <code>ε</code>
+边连接三个子图，再汇到终态。</p>
+<h3 id="7-不同进制无符号整数识别">7. 不同进制无符号整数识别</h3>
+<p><img src="assets/例题截图/ch3-integer-states.png"
+alt="第3章 不同进制整数识别" /></p>
+<p>答案要点：</p>
+<ul>
+<li>十进制：非零数字开头后接数字，或单独 <code>0</code>。</li>
+<li>八进制：通常以 <code>0</code> 开头，后接 <code>0..7</code>。</li>
+<li>十六进制：通常以 <code>0x/0X</code> 开头，后接
+<code>0..9/a..f/A..F</code>。</li>
+</ul>
+<p>解析：状态图区分“读到前缀”“读到合法数字”“非法数字”。</p>
+<h3 id="8-导读练习token-序列">8. 导读练习：token 序列</h3>
+<p>题：<code>if count&lt;=10 then count:=count+1</code></p>
+<p>答案：</p>
+<pre class="text"><code>(if, -)
+(id, count)
+(relop, &lt;=)
+(num, 10)
+(then, -)
+(id, count)
+(assign, :=)
+(id, count)
+(addop, +)
+(num, 1)</code></pre>
+<p>解析：<code>&lt;=</code> 必须按最长匹配作为一个关系运算符，不能拆成
+<code>&lt;</code> 和 <code>=</code>。</p>
+<h3 id="9-导读练习aabb-的右线性文法">9. 导读练习：<code>a(a|b)*b</code>
+的右线性文法</h3>
+<p>答案：</p>
+<pre class="text"><code>S → aA
+A → aA | bA | b</code></pre>
+<p>解析：首位由 <code>S→aA</code> 保证；<code>A→b</code> 负责最后以
+<code>b</code> 结束。</p>
+<h3 id="10-导读练习nfa-子集构造">10. 导读练习：NFA 子集构造</h3>
+<p>NFA：<code>q0 --a--&gt; q0</code>，<code>q0 --a--&gt; q1</code>，<code>q1 --b--&gt; q1</code>，初态
+<code>q0</code>，终态 <code>q1</code>。</p>
+<p>答案：</p>
+<table>
+<thead>
+<tr>
+<th>DFA 状态</th>
+<th>NFA 状态集合</th>
+<th>读 a</th>
+<th>读 b</th>
+<th>终态?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td><code>{q0}</code></td>
+<td>B</td>
+<td>Ø</td>
+<td>否</td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>{q0,q1}</code></td>
+<td>B</td>
+<td>C</td>
+<td>是</td>
+</tr>
+<tr>
+<td>C</td>
+<td><code>{q1}</code></td>
+<td>Ø</td>
+<td>C</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Ø</td>
+<td><code>∅</code></td>
+<td>Ø</td>
+<td>Ø</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<p>解析：DFA 的一个状态是 NFA 状态集合；集合中含 <code>q1</code>
+即为终态。</p>
+<hr />
+</article>
+<article class="answer-panel" id="panel-4" data-panel="第-4-章-自顶向下语法分析" tabindex="0"><h2 id="第-4-章-自顶向下语法分析">第 4 章 自顶向下语法分析</h2>
+<h3 id="1-sxay-a输入-xy">1. <code>S→xAy, A→**|*</code>，输入
+<code>x**y</code></h3>
+<p>答案：</p>
+<pre class="text"><code>S ⇒ xAy ⇒ x**y</code></pre>
+<p>解析：选择 <code>A→**</code> 可成功；若先试 <code>A→*</code>，得到
+<code>x*y</code>，与输入不符，需要回溯。</p>
+<h3 id="2-表达式文法-first-集">2. 表达式文法 FIRST 集</h3>
+<p><img src="assets/例题截图/ch4-first.png" alt="第4章 FIRST" /></p>
+<p>文法：</p>
+<pre class="text"><code>E  → T E&#39;
+E&#39; → + T E&#39; | ε
+T  → F T&#39;
+T&#39; → * F T&#39; | ε
+F  → (E) | id</code></pre>
+<p>答案：</p>
+<pre class="text"><code>FIRST(F)  = {(, id}
+FIRST(T&#39;) = {*, ε}
+FIRST(T)  = {(, id}
+FIRST(E&#39;) = {+, ε}
+FIRST(E)  = {(, id}</code></pre>
+<p>解析：<code>E</code> 的首符号来自 <code>T</code>，<code>T</code>
+的首符号来自 <code>F</code>。</p>
+<h3 id="3-表达式文法-follow-集">3. 表达式文法 FOLLOW 集</h3>
+<p><img src="assets/例题截图/ch4-follow.png" alt="第4章 FOLLOW" /></p>
+<p>答案：</p>
+<pre class="text"><code>FOLLOW(E)  = {), #}
+FOLLOW(E&#39;) = {), #}
+FOLLOW(T)  = {+, ), #}
+FOLLOW(T&#39;) = {+, ), #}
+FOLLOW(F)  = {*, +, ), #}</code></pre>
+<p>解析：开始符号含 <code>#</code>；<code>F</code> 后可能接
+<code>T'</code> 的 <code>*</code>，若 <code>T'⇒ε</code>，还继承
+<code>FOLLOW(T)</code>。</p>
+<h3 id="4-非-ll1scad-aaba">4. 非 LL(1)：<code>S→cAd, A→ab|a</code></h3>
+<p><img src="assets/例题截图/ch4-non-ll1.png" alt="第4章 非LL1" /></p>
+<p>答案：</p>
+<pre class="text"><code>FIRST(ab) = {a}
+FIRST(a)  = {a}</code></pre>
+<p>同一非终结符 <code>A</code> 的两个候选式 FIRST 集相交，所以不是
+LL(1)。</p>
+<p>改写：</p>
+<pre class="text"><code>S → c A d
+A → a A&#39;
+A&#39; → b | ε</code></pre>
+<p>解析：原文法需要看到第二个符号才能决定 <code>A→ab</code> 还是
+<code>A→a</code>，违反 1 个向前看符号的要求。</p>
+<h3 id="5-消除表达式文法左递归">5. 消除表达式文法左递归</h3>
+<p>答案：</p>
+<pre class="text"><code>E  → T E&#39;
+E&#39; → + T E&#39; | ε
+T  → F T&#39;
+T&#39; → * F T&#39; | ε
+F  → (E) | id</code></pre>
+<p>解析：形如 <code>A→Aα|β</code> 改写为
+<code>A→βA'</code>，<code>A'→αA'|ε</code>。</p>
+<h3 id="6-firstfollowselect-小练习">6. FIRST/FOLLOW/SELECT 小练习</h3>
+<p>文法：<code>S→aA|b</code>，<code>A→c|ε</code>。</p>
+<p>答案：</p>
+<pre class="text"><code>FIRST(S) = {a,b}
+FIRST(A) = {c,ε}
+FOLLOW(S) = {#}
+FOLLOW(A) = {#}
+
+SELECT(S→aA) = {a}
+SELECT(S→b) = {b}
+SELECT(A→c) = {c}
+SELECT(A→ε) = {#}</code></pre>
+<p>解析：同左部候选式 SELECT 集不相交，因此该文法是 LL(1)。</p>
+<h3 id="7-预测分析表构造">7. 预测分析表构造</h3>
+<p>答案方法：</p>
+<p>对每个产生式 <code>A→α</code>：</p>
+<ul>
+<li>对每个 <code>a∈FIRST(α)-{ε}</code>，填
+<code>M[A,a]=A→α</code>。</li>
+<li>若 <code>ε∈FIRST(α)</code>，对每个 <code>b∈FOLLOW(A)</code>，填
+<code>M[A,b]=A→α</code>。</li>
+<li>空表项为 error。</li>
+</ul>
+<p>解析：LL(1) 表项不能冲突；冲突说明不是 LL(1) 或文法需改写。</p>
+<h3 id="8-递归下降子程序">8. 递归下降子程序</h3>
+<p><img src="assets/例题截图/ch4-recursive-parser.png"
+alt="第4章 递归下降分析器" /></p>
+<p>以 <code>E'→+TE'|ε</code> 为例：</p>
+<pre class="text"><code>procedure Eprime:
+  if lookahead == &#39;+&#39;:
+    match(&#39;+&#39;)
+    T()
+    Eprime()
+  else if lookahead in FOLLOW(Eprime):
+    return
+  else:
+    error()</code></pre>
+<p>解析：每个非终结符一个过程；终结符用 <code>match</code>
+匹配；<code>ε</code> 分支通常由 FOLLOW 集触发。</p>
+<hr />
+</article>
+<article class="answer-panel" id="panel-5" data-panel="第-5-章-自底向上语法分析" tabindex="0"><h2 id="第-5-章-自底向上语法分析">第 5 章 自底向上语法分析</h2>
+<h3 id="1-例-51归约-abbcde">1. 例 5.1：归约 <code>abbcde</code></h3>
+<p><img src="assets/例题截图/ch5-reduce.png" alt="第5章 归约过程" /></p>
+<p>文法：<code>S→aABe</code>，<code>A→Abc|b</code>，<code>B→d</code>。</p>
+<p>答案：</p>
+<pre class="text"><code>abbcde
+⇒ 归约 b 为 A: aAbcde
+⇒ 归约 Abc 为 A: aAde
+⇒ 归约 d 为 B: aABe
+⇒ 归约 aABe 为 S: S</code></pre>
+<p>解析：自底向上分析不断找句柄并归约，最终得到开始符号。</p>
+<h3 id="2-算符优先关系">2. 算符优先关系</h3>
+<p><img src="assets/例题截图/ch5-op-precedence.png"
+alt="第5章 算符优先关系" /></p>
+<p>答案方法：</p>
+<ul>
+<li>若产生式右部出现相邻终结符 <code>ab</code>，则
+<code>a =· b</code>。</li>
+<li>若出现 <code>aB</code>，则对 <code>b∈FIRSTOP(B)</code>，有
+<code>a &lt;· b</code>。</li>
+<li>若出现 <code>Ba</code>，则对 <code>b∈LASTOP(B)</code>，有
+<code>b &gt;· a</code>。</li>
+</ul>
+<p>解析：算符优先表用于判断何时移进、何时归约。</p>
+<h3 id="3-例-57算符优先分析-idid">3. 例 5.7：算符优先分析
+<code>id+id</code></h3>
+<p><img src="assets/例题截图/ch5-op-analysis.png"
+alt="第5章 算符优先分析" /></p>
+<p>核心过程：</p>
+<pre class="text"><code># id + id #
+移进 id，归约为 F/T/E
+看到 +，移进 +
+移进 id，归约为 F/T/E
+按 E+T 或 E+E 的结构归约
+最终 # E # 接受</code></pre>
+<p>解析：实际填写时用“步骤、栈、输入串、优先关系、动作”五列。</p>
+<h3 id="4-素短语ttfid">4. 素短语：<code>T+T*F+id</code></h3>
+<p>答案要点：</p>
+<ul>
+<li>短语可包括
+<code>T</code>、<code>T*F</code>、<code>id</code>、<code>T+T*F</code>
+等，依赖完整语法树。</li>
+<li>素短语是不再含更小短语的短语。</li>
+<li>最左素短语是算符优先分析下一步归约对象。</li>
+</ul>
+<p>解析：算符优先分析不是找普通句柄，而是利用终结符优先关系找最左素短语。</p>
+<h3 id="5-lr0-项目集与-dfass-sbb-babb">5. LR(0) 项目集与
+DFA：<code>S'→S, S→BB, B→aB|b</code></h3>
+<p><img src="assets/例题截图/ch5-lr0-dfa.png" alt="第5章 LR0 DFA" /></p>
+<p>答案项目集：</p>
+<pre class="text"><code>I0:
+S&#39;→.S
+S →.BB
+B →.aB
+B →.b
+
+I1:
+S&#39;→S.
+
+I2:
+S →B.B
+B →.aB
+B →.b
+
+I3:
+B →a.B
+B →.aB
+B →.b
+
+I4:
+B →b.
+
+I5:
+S →BB.
+
+I6:
+B →aB.</code></pre>
+<p>解析：<code>CLOSURE</code>
+遇到圆点后是非终结符就加入该非终结符的所有产生式；<code>GOTO(I,X)</code>
+表示圆点越过 <code>X</code>。</p>
+<h3 id="6-lr0-分析表">6. LR(0) 分析表</h3>
+<p><img src="assets/例题截图/ch5-lr0-table.png"
+alt="第5章 LR0 分析表" /></p>
+<p>答案：</p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>a</th>
+<th>b</th>
+<th>#</th>
+<th>S</th>
+<th>B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>s3</td>
+<td>s4</td>
+<td></td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1</td>
+<td></td>
+<td></td>
+<td>acc</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>s3</td>
+<td>s4</td>
+<td></td>
+<td></td>
+<td>5</td>
+</tr>
+<tr>
+<td>3</td>
+<td>s3</td>
+<td>s4</td>
+<td></td>
+<td></td>
+<td>6</td>
+</tr>
+<tr>
+<td>4</td>
+<td>r3</td>
+<td>r3</td>
+<td>r3</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>r1</td>
+<td>r1</td>
+<td>r1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>r2</td>
+<td>r2</td>
+<td>r2</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>产生式编号：</p>
+<pre class="text"><code>1) S→BB
+2) B→aB
+3) B→b</code></pre>
+<p>解析：LR(0) 归约项目对所有终结符和 <code>#</code>
+都填归约动作，因此容易冲突。</p>
+<h3 id="7-slr-修正">7. SLR 修正</h3>
+<p>答案规则：若状态含归约项目 <code>A→α.</code>，SLR 不在所有终结符上填
+<code>r</code>，只在 <code>FOLLOW(A)</code> 上填归约。</p>
+<p>解析：SLR 利用 FOLLOW 限制归约发生的输入符号，能消除一部分 LR(0)
+冲突。</p>
+<h3 id="8-lr-冲突判断">8. LR 冲突判断</h3>
+<p>答案：</p>
+<ul>
+<li>项目集中同时有移进项目和归约项目：移进-归约冲突。</li>
+<li>项目集中有两个或更多归约项目：归约-归约冲突。</li>
+<li>没有上述冲突：LR(0) 相容状态。</li>
+</ul>
+<p>解析：表项中同一个位置要填两个动作，就产生冲突。</p>
+<hr />
+</article>
+<article class="answer-panel" id="panel-6" data-panel="第-6-章-语法制导翻译与属性文法" tabindex="0"><h2 id="第-6-章-语法制导翻译与属性文法">第 6 章
+语法制导翻译与属性文法</h2>
+<h3 id="1-台式计算器-sdd">1. 台式计算器 SDD</h3>
+<p>答案示例：</p>
+<pre class="text"><code>L → E n        { print(E.val) }
+E → E1 + T     { E.val = E1.val + T.val }
+E → T          { E.val = T.val }
+T → T1 * F     { T.val = T1.val * F.val }
+T → F          { T.val = F.val }
+F → digit      { F.val = digit.lexval }</code></pre>
+<p>解析：这里只用综合属性，属性值自底向上传递，所以是 S-属性定义。</p>
+<h3 id="2-依赖图">2. 依赖图</h3>
+<p><img src="assets/例题截图/ch6-dep-graph.png"
+alt="第6章 依赖图" /></p>
+<p>答案方法：</p>
+<ol type="1">
+<li>为每个属性实例建一个结点。</li>
+<li>若 <code>b=f(c1,...,ck)</code>，则从每个 <code>ci</code> 向
+<code>b</code> 画边。</li>
+<li>对依赖图做拓扑排序，得到属性求值顺序。</li>
+</ol>
+<p>解析：有环说明属性定义不能按普通依赖顺序求值。</p>
+<h3 id="3-ast-构造3xy">3. AST 构造：<code>3*x/y</code></h3>
+<p><img src="assets/例题截图/ch6-ast.png" alt="第6章 AST" /></p>
+<p>答案：</p>
+<pre class="text"><code>      /
+     / \
+    *   y
+   / \
+  3   x</code></pre>
+<p>若用函数：</p>
+<pre class="text"><code>n1 = mkleaf(num, 3)
+n2 = mkleaf(id, x)
+n3 = mknode(&#39;*&#39;, n1, n2)
+n4 = mkleaf(id, y)
+n5 = mknode(&#39;/&#39;, n3, n4)</code></pre>
+<p>解析：<code>*</code> 和 <code>/</code> 左结合，所以
+<code>3*x/y</code> 等价于 <code>(3*x)/y</code>。</p>
+<h3 id="4-中缀转后缀翻译模式">4. 中缀转后缀翻译模式</h3>
+<p>答案示例：</p>
+<pre class="text"><code>E → T R
+R → + T { print(&#39;+&#39;) } R | - T { print(&#39;-&#39;) } R | ε
+T → F S
+S → * F { print(&#39;*&#39;) } S | / F { print(&#39;/&#39;) } S | ε
+F → digit { print(digit.lexeme) } | (E)</code></pre>
+<p>解析：运算符动作放在右操作数翻译之后，就能输出后缀式。</p>
+<h3 id="5-例-6173xy-的翻译">5. 例 6.17：<code>3*x/y</code> 的翻译</h3>
+<p><img src="assets/例题截图/ch6-translation-stack.png"
+alt="第6章 翻译栈" /></p>
+<p>答案：后缀式为：</p>
+<pre class="text"><code>3 x * y /</code></pre>
+<p>解析：根据左结合，先输出 <code>3 x *</code>，再和 <code>y</code>
+组成除法，输出 <code>/</code>。</p>
+<h3 id="6-判断-s-属性与-l-属性">6. 判断 S-属性与 L-属性</h3>
+<p>答案：</p>
+<ul>
+<li>只含综合属性：S-属性定义。</li>
+<li>对产生式 <code>A→X1X2...Xn</code>，<code>Xi</code>
+的继承属性只能依赖 <code>A</code> 的继承属性和 <code>X1...X(i-1)</code>
+的属性：L-属性定义。</li>
+</ul>
+<p>解析：所有 S-属性定义都是 L-属性定义，但反过来不一定。</p>
+<hr />
+</article>
+<article class="answer-panel" id="panel-7" data-panel="第-7-章-语义分析与中间代码生成" tabindex="0"><h2 id="第-7-章-语义分析与中间代码生成">第 7 章
+语义分析与中间代码生成</h2>
+<h3 id="1-中缀前缀后缀">1. 中缀、前缀、后缀</h3>
+<p>答案：</p>
+<table>
+<thead>
+<tr>
+<th>中缀</th>
+<th>前缀</th>
+<th>后缀</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a+b</code></td>
+<td><code>+ab</code></td>
+<td><code>ab+</code></td>
+</tr>
+<tr>
+<td><code>a*(b+c)</code></td>
+<td><code>*a+bc</code></td>
+<td><code>abc+*</code></td>
+</tr>
+<tr>
+<td><code>(a+b)*(c+d)</code></td>
+<td><code>*+ab+cd</code></td>
+<td><code>ab+cd+*</code></td>
+</tr>
+<tr>
+<td><code>a:=a*b+c*d</code></td>
+<td><code>:=a+*ab*cd</code></td>
+<td><code>aab*cd*+=</code></td>
+</tr>
+</tbody>
+</table>
+<p>解析：后缀式的运算顺序就是运算符出现顺序。</p>
+<h3 id="2-a-bcd-cd-的三地址码">2. <code>a:=(-b)*(c+d)-(c+d)</code>
+的三地址码</h3>
+<p>答案：</p>
+<pre class="text"><code>t1 := minus b
+t2 := c + d
+t3 := t1 * t2
+t4 := c + d
+t5 := t3 - t4
+a := t5</code></pre>
+<p>优化后可复用 <code>c+d</code>：</p>
+<pre class="text"><code>t1 := minus b
+t2 := c + d
+t3 := t1 * t2
+t5 := t3 - t2
+a := t5</code></pre>
+<p>解析：未优化三地址码通常直接按语法树生成；DAG
+优化会合并公共子表达式。</p>
+<h3 id="3-aab-c-b-cd-的-dag">3. <code>a+a*(b-c)-(b-c)/d</code> 的
+DAG</h3>
+<p><img src="assets/例题截图/ch7-dag.png" alt="第7章 DAG" /></p>
+<p>答案要点：公共子表达式是 <code>b-c</code>，只建一个 <code>-</code>
+结点供乘法和除法共同使用。</p>
+<p>解析：DAG
+与普通语法树的区别是相同表达式共享结点，便于公共子表达式删除。</p>
+<h3 id="4-声明语句-offset">4. 声明语句 offset</h3>
+<p>题：<code>int a; real b; int c;</code>，<code>int=4</code>，<code>real=8</code>，初始
+<code>offset=0</code>。</p>
+<p>答案：</p>
+<table>
+<thead>
+<tr>
+<th>名字</th>
+<th>类型</th>
+<th>宽度</th>
+<th>offset</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a</td>
+<td>int</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr>
+<td>b</td>
+<td>real</td>
+<td>8</td>
+<td>4</td>
+</tr>
+<tr>
+<td>c</td>
+<td>int</td>
+<td>4</td>
+<td>12</td>
+</tr>
+</tbody>
+</table>
+<p>结束后 <code>offset=16</code>。</p>
+<p>解析：每登记一个名字，当前 offset 是它的相对地址，然后
+<code>offset += width</code>。</p>
+<h3 id="5-数组地址计算">5. 数组地址计算</h3>
+<p><img src="assets/例题截图/ch7-array.png" alt="第7章 数组寻址" /></p>
+<p>题：<code>A[1:3,0:4]</code>，行优先，元素宽度 4。</p>
+<p>答案：</p>
+<pre class="text"><code>位移(A[i,j]) = ((i-1)*5 + (j-0))*4
+A[2,3] 位移 = ((2-1)*5+3)*4 = 32</code></pre>
+<p>解析：第二维长度为 <code>4-0+1=5</code>。行优先时第一维每加
+1，要跳过一整行 <code>5</code> 个元素。</p>
+<h3 id="6-布尔表达式-ab-or-cd-and-ef">6. 布尔表达式
+<code>a&lt;b or c&lt;d and e&lt;f</code></h3>
+<p><img src="assets/例题截图/ch7-bool.png" alt="第7章 布尔翻译" /></p>
+<p>控制流翻译答案：</p>
+<pre class="text"><code>if a &lt; b goto Ltrue
+goto L1
+L1: if c &lt; d goto L2
+goto Lfalse
+L2: if e &lt; f goto Ltrue
+goto Lfalse</code></pre>
+<p>解析：<code>and</code> 优先级高于 <code>or</code>；<code>or</code>
+左边真则整体真，<code>and</code> 左边假则整体假。</p>
+<h3 id="7-if-ab-then-x1-else-x2">7.
+<code>if a&lt;b then x:=1 else x:=2</code></h3>
+<p>答案：</p>
+<pre class="text"><code>if a &lt; b goto Lthen
+goto Lelse
+Lthen:
+x := 1
+goto Lnext
+Lelse:
+x := 2
+Lnext:</code></pre>
+<p>解析：then 分支结束后必须跳过 else 分支。</p>
+<h3 id="8-例-710while--if-else">8. 例 7.10：while + if-else</h3>
+<p><img src="assets/例题截图/ch7-ifwhile.png"
+alt="第7章 if while 翻译" /></p>
+<p>题：<code>while a &lt; b do if c &lt; d then x := y+z else x := y-z</code></p>
+<p>答案：</p>
+<pre class="text"><code>Lbegin:
+if a &lt; b goto Lif
+goto Lnext
+Lif:
+if c &lt; d goto Lthen
+goto Lelse
+Lthen:
+t1 := y + z
+x := t1
+goto Lbegin
+Lelse:
+t2 := y - z
+x := t2
+goto Lbegin
+Lnext:</code></pre>
+<p>解析：while 体执行完要跳回循环测试；if 的两个分支都在循环体内。</p>
+<h3 id="9-过程调用-y--fa-b1">9. 过程调用
+<code>y := f(a, b+1)</code></h3>
+<p>答案：</p>
+<pre class="text"><code>t1 := b + 1
+param a
+param t1
+t2 := call f, 2
+y := t2</code></pre>
+<p>解析：<code>param</code> 个数和 <code>call f, 2</code>
+的实参数一致；若调用约定要求逆序压参，<code>param</code>
+顺序随约定调整。</p>
+<h3 id="10-回填式翻译">10. 回填式翻译</h3>
+<p><img src="assets/例题截图/ch7-backpatch.png" alt="第7章 回填" /></p>
+<p>答案要点：</p>
+<ul>
+<li><code>makelist(i)</code>：创建只含跳转指令 <code>i</code>
+的链。</li>
+<li><code>merge(p1,p2)</code>：合并两条未定目标链。</li>
+<li><code>backpatch(p,i)</code>：把链 <code>p</code> 中所有空目标填为
+<code>i</code>。</li>
+</ul>
+<p>解析：回填解决“一边扫描一边生成跳转代码时目标地址尚未知道”的问题。</p>
+<h3 id="11-switch-翻译">11. switch 翻译</h3>
+<p><img src="assets/例题截图/ch7-switch.png"
+alt="第7章 switch 翻译" /></p>
+<p>答案模板：</p>
+<pre class="text"><code>t := E
+if t == V1 goto L1
+if t == V2 goto L2
+...
+goto Ldefault
+L1: S1; goto Lnext
+L2: S2; goto Lnext
+...
+Ldefault: Sdefault
+Lnext:</code></pre>
+<p>解析：case
+可以翻译成顺序比较跳转，也可生成跳转表；考试通常写顺序比较即可。</p>
+<hr />
+</article>
+<article class="answer-panel" id="panel-8" data-panel="第-8-章-符号表管理" tabindex="0"><h2 id="第-8-章-符号表管理">第 8 章 符号表管理</h2>
+<h3 id="1-符号表存放什么">1. 符号表存放什么</h3>
+<p>答案：至少存名字和属性。常见属性包括：</p>
+<pre class="text"><code>kind: 变量/函数/类型/常量/标号
+type: 类型
+width: 宽度
+offset/address: 地址或相对地址
+scope: 作用域层次
+params: 参数信息
+return_type: 返回类型</code></pre>
+<p>解析：符号表服务语义检查、中间代码生成和目标代码生成。</p>
+<h3 id="2-名字字段组织">2. 名字字段组织</h3>
+<p>答案：</p>
+<ul>
+<li>固定长度名字字段：查找简单，但浪费空间。</li>
+<li>可变长度字段：节省空间，但表项管理复杂。</li>
+<li>字符串表：符号表中只存指针/下标，兼顾空间和管理效率。</li>
+</ul>
+<p>解析：实际编译器常把标识符字符序列放到统一字符串表。</p>
+<h3 id="3-块结构符号表">3. 块结构符号表</h3>
+<p><img src="assets/例题截图/ch8-block-symbol-table.png"
+alt="第8章 块结构符号表" /></p>
+<p>答案方法：</p>
+<ol type="1">
+<li>每进入一个块，建立新符号表。</li>
+<li>当前块声明插入当前表。</li>
+<li>查找名字时先查当前表，再沿外层链向外查。</li>
+<li>当前块内同名通常报重复定义；内层块可遮蔽外层同名。</li>
+</ol>
+<p>解析：符号表链反映词法嵌套作用域。</p>
+<h3 id="4-线性表与散列表">4. 线性表与散列表</h3>
+<p>答案：</p>
+<ul>
+<li>线性表：插入简单，查找平均 <code>O(n)</code>。</li>
+<li>散列表：查找平均接近 <code>O(1)</code>，但要处理冲突。</li>
+</ul>
+<p>解析：编译器中名字查找频繁，散列表更常用。</p>
+<h3 id="5-函数表项设计">5. 函数表项设计</h3>
+<p>答案示例：</p>
+<pre class="text"><code>name = f
+kind = function
+return_type = int
+param_types = [int, real]
+param_count = 2
+entry = 代码入口地址
+level = 作用域层次</code></pre>
+<p>解析：函数调用检查需要参数个数、参数类型、返回类型。</p>
+<hr />
+</article>
+<article class="answer-panel" id="panel-9" data-panel="第-9-章-运行时存储组织" tabindex="0"><h2 id="第-9-章-运行时存储组织">第 9 章 运行时存储组织</h2>
+<h3 id="1-静态作用域判断">1. 静态作用域判断</h3>
+<p><img src="assets/例题截图/ch9-scope.png" alt="第9章 作用域" /></p>
+<p>答案原则：</p>
+<ul>
+<li>在当前块内引用名字，先找最近的声明。</li>
+<li>内层同名声明遮蔽外层声明。</li>
+<li>退出内层块后，内层声明不可见。</li>
+</ul>
+<p>解析：静态作用域只看程序文本结构，不看运行时调用路径。</p>
+<h3 id="2-访问链与控制链">2. 访问链与控制链</h3>
+<p>题：<code>P</code> 中定义 <code>Q</code>，<code>Q</code> 中定义
+<code>R</code>。当前在 <code>R</code> 中访问 <code>P.x</code>。</p>
+<p>答案：沿访问链/静态链从 <code>R</code> 到 <code>Q</code>，再到
+<code>P</code>，共两跳，然后按 <code>x</code> 的 offset 访问。</p>
+<p>解析：控制链指向调用者，反映动态调用关系；访问链指向词法外层，反映静态嵌套关系。</p>
+<h3 id="3-活动记录">3. 活动记录</h3>
+<p><img src="assets/例题截图/ch9-activation-record.png"
+alt="第9章 活动记录" /></p>
+<p>典型布局：</p>
+<pre class="text"><code>实参区
+返回值位置
+返回地址
+动态链/控制链
+静态链/访问链
+保存寄存器
+局部变量
+临时变量</code></pre>
+<p>解析：一次过程调用对应一个活动记录；递归调用会产生多个活动记录。</p>
+<h3 id="4-静态分配栈分配堆分配">4. 静态分配、栈分配、堆分配</h3>
+<p>答案：</p>
+<table>
+<thead>
+<tr>
+<th>分配方式</th>
+<th>适用对象</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>静态分配</td>
+<td>全局变量、无递归语言的局部对象</td>
+<td>编译期确定地址</td>
+</tr>
+<tr>
+<td>栈式分配</td>
+<td>普通过程调用的局部变量、临时变量</td>
+<td>调用进入分配，返回释放</td>
+</tr>
+<tr>
+<td>堆分配</td>
+<td>动态对象、生命周期不服从栈顺序的数据</td>
+<td>需要显式/自动回收</td>
+</tr>
+</tbody>
+</table>
+<p>解析：关键看对象大小和生命周期能否在编译期或按调用栈确定。</p>
+<h3 id="5-参数传递">5. 参数传递</h3>
+<p>答案：</p>
+<ul>
+<li>传值：形参得到实参值副本，修改形参不影响实参。</li>
+<li>传地址/引用：形参可通过地址修改实参。</li>
+<li>传名：每次使用形参时重新按实参表达式求值，较少见。</li>
+</ul>
+<p>解析：参数传递题常结合活动记录和调用序列考。</p>
+<hr />
+</article>
+<article class="answer-panel" id="panel-10" data-panel="第-10-章-代码优化" tabindex="0"><h2 id="第-10-章-代码优化">第 10 章 代码优化</h2>
+<h3 id="1-公共子表达式">1. 公共子表达式</h3>
+<p>答案示例：</p>
+<pre class="text"><code>t1 := a + b
+t2 := a + b
+x := t1 * t2</code></pre>
+<p>若两次之间 <code>a</code>、<code>b</code> 没变，可优化为：</p>
+<pre class="text"><code>t1 := a + b
+x := t1 * t1</code></pre>
+<p>解析：公共子表达式成立的条件是表达式相同且操作数值未被改变。</p>
+<h3 id="2-复制传播">2. 复制传播</h3>
+<p>答案：</p>
+<pre class="text"><code>f := g
+x := f + 1</code></pre>
+<p>可变为：</p>
+<pre class="text"><code>f := g
+x := g + 1</code></pre>
+<p>若 <code>f</code> 后面不再使用，<code>f:=g</code> 可进一步删除。</p>
+<p>解析：复制传播本身不一定减少语句，但能制造死代码删除机会。</p>
+<h3 id="3-基本块划分">3. 基本块划分</h3>
+<p>题：</p>
+<pre class="text"><code>1  t1 := a + b
+2  if t1 &lt; c goto 5
+3  d := t1 * 2
+4  goto 6
+5  d := t1 + 1
+6  e := d</code></pre>
+<p>答案：</p>
+<pre class="text"><code>B1 = {1,2}
+B2 = {3,4}
+B3 = {5}
+B4 = {6}</code></pre>
+<p>解析：入口语句是 1、跳转目标 5/6、跳转语句后继 3。</p>
+<h3 id="4-基本块内公共子表达式优化">4. 基本块内公共子表达式优化</h3>
+<p>题：</p>
+<pre class="text"><code>t1 := a + b
+t2 := a + b
+t3 := t2 * c
+d := t1
+e := d * c</code></pre>
+<p>出口活跃变量只有 <code>d</code> 和 <code>e</code>。</p>
+<p>答案：</p>
+<pre class="text"><code>t1 := a + b
+d := t1
+e := t1 * c</code></pre>
+<p>解析：<code>t2</code> 与 <code>t1</code> 等价；<code>t3</code>
+出口不活跃，可以删除；<code>d=t1</code> 后 <code>e=d*c</code> 可用
+<code>t1*c</code>。</p>
+<h3 id="5-循环不变式外提">5. 循环不变式外提</h3>
+<p>答案模板：</p>
+<pre class="text"><code>while (...) {
+  t := a * b   // a,b 循环内不变
+  x := t + i
+}</code></pre>
+<p>优化为：</p>
+<pre class="text"><code>t := a * b
+while (...) {
+  x := t + i
+}</code></pre>
+<p>解析：外提前必须确认该计算每次循环都会执行，且外提不会改变异常/副作用语义。</p>
+<h3 id="6-强度削弱">6. 强度削弱</h3>
+<p>答案示例：</p>
+<pre class="text"><code>2*x     → x+x
+x^2     → x*x
+i*4     → i &lt;&lt; 2      // 定点整数且机器支持时</code></pre>
+<p>解析：强度削弱用较便宜运算替代较昂贵运算，但必须保持语义等价。</p>
+<hr />
+</article>
+<article class="answer-panel" id="panel-11" data-panel="第-11-章-代码生成" tabindex="0"><h2 id="第-11-章-代码生成">第 11 章 代码生成</h2>
+<h3 id="1-x--y--z-的目标代码">1. <code>x := y + z</code> 的目标代码</h3>
+<p>答案：</p>
+<pre class="text"><code>MOV y, R0
+ADD z, R0
+MOV R0, x</code></pre>
+<p>解析：朴素代码生成先装入一个操作数，再执行运算，最后存回结果。</p>
+<h3 id="2-a--b--c-d--a--e-的优化">2. <code>a := b + c; d := a + e</code>
+的优化</h3>
+<p>答案：朴素代码可能是：</p>
+<pre class="text"><code>MOV b, R0
+ADD c, R0
+MOV R0, a
+MOV a, R0
+ADD e, R0
+MOV R0, d</code></pre>
+<p>若 <code>a</code> 后续不需要存入内存，可优化为：</p>
+<pre class="text"><code>MOV b, R0
+ADD c, R0
+ADD e, R0
+MOV R0, d</code></pre>
+<p>解析：<code>MOV R0,a</code> 和 <code>MOV a,R0</code> 是为了保存/再取
+<code>a</code>，若语义上不需要保留 <code>a</code>，可删除。</p>
+<h3 id="3-特殊指令">3. 特殊指令</h3>
+<p>答案：</p>
+<pre class="text"><code>a := a + 1</code></pre>
+<p>若目标机支持，可生成：</p>
+<pre class="text"><code>INC a</code></pre>
+<p>解析：指令选择应利用目标机器提供的高效指令。</p>
+<h3 id="4-窥孔优化">4. 窥孔优化</h3>
+<p>题：</p>
+<pre class="text"><code>MOV a, R0
+MOV R0, b
+MOV b, R0
+ADD c, R0
+MOV R0, d</code></pre>
+<p>答案：</p>
+<pre class="text"><code>MOV a, R0
+MOV R0, b
+ADD c, R0
+MOV R0, d</code></pre>
+<p>解析：第二条后 <code>R0</code> 已经等于 <code>b</code> 的值，第三条
+<code>MOV b,R0</code> 冗余。前提是中间没有标号、别名或副作用改变
+<code>b/R0</code>。</p>
+<h3 id="5-不可达代码消除">5. 不可达代码消除</h3>
+<p>答案模板：</p>
+<pre class="text"><code>goto L1
+x := 1     // 若无标号可跳入，删除
+L1:
+y := 2</code></pre>
+<p>优化为：</p>
+<pre class="text"><code>goto L1
+L1:
+y := 2</code></pre>
+<p>解析：无条件跳转后的无标号代码不会执行。</p>
+<h3 id="6-寄存器分配与指派">6. 寄存器分配与指派</h3>
+<p>答案：</p>
+<ul>
+<li>寄存器分配：决定哪些变量/临时值放入寄存器。</li>
+<li>寄存器指派：决定它们具体放入哪个寄存器。</li>
+</ul>
+<p>解析：寄存器少时，要根据变量活跃性和使用频率决定谁留在寄存器，谁溢出到内存。</p>
+<hr />
+</article>
+<article class="answer-panel" id="panel-12" data-panel="总题型答案模板" tabindex="0"><h2 id="总题型答案模板">总题型答案模板</h2>
+<h3 id="a-文法构造">A. 文法构造</h3>
+<p>答案步骤：</p>
+<ol type="1">
+<li>写合法/非法样例。</li>
+<li>找约束：开头、结尾、数量相等、嵌套、局部禁忌。</li>
+<li>设计非终结符分工。</li>
+<li>用样例推导检查是否多生成/漏生成。</li>
+</ol>
+<h3 id="b-二义性证明">B. 二义性证明</h3>
+<p>标准答案：</p>
+<pre class="text"><code>取句子 w = ...
+存在最左推导 1: ...
+存在最左推导 2: ...
+两条最左推导不同，所以文法二义。</code></pre>
+<p>或画两棵不同语法树。</p>
+<h3 id="c-dfanfa">C. DFA/NFA</h3>
+<p>答案步骤：</p>
+<ol type="1">
+<li>正则式先 Thompson 构造 NFA。</li>
+<li>子集法确定化。</li>
+<li>终态/非终态初分组。</li>
+<li>按输入转移目标组细分，直到稳定。</li>
+</ol>
+<h3 id="d-ll1">D. LL(1)</h3>
+<p>答案步骤：</p>
+<pre class="text"><code>消除左递归/提左因子
+求 FIRST
+求 FOLLOW
+求 SELECT
+检查同左部 SELECT 是否相交
+构造预测分析表</code></pre>
+<h3 id="e-lr-分析表">E. LR 分析表</h3>
+<p>答案步骤：</p>
+<pre class="text"><code>增广文法
+列项目
+求 CLOSURE/GOTO
+画项目集 DFA
+填 ACTION/GOTO
+检查冲突</code></pre>
+<h3 id="f-中间代码">F. 中间代码</h3>
+<p>答案步骤：</p>
+<p>表达式：先按优先级生成临时变量。<br />
+布尔表达式：写真出口/假出口，注意短路。<br />
+控制结构：先画目标代码结构，再填标号。<br />
+数组：先算相对位移，再生成取数/赋值代码。</p>
+<h3 id="g-运行时存储">G. 运行时存储</h3>
+<p>答案步骤：</p>
+<pre class="text"><code>判断作用域规则
+画活动记录
+区分控制链和访问链
+按静态层次差找非局部变量
+说明调用序列/返回序列</code></pre>
+<h3 id="h-优化与代码生成">H. 优化与代码生成</h3>
+<p>答案步骤：</p>
+<pre class="text"><code>划基本块
+看变量是否活跃
+合并公共子表达式
+做复制/常量传播
+删死代码
+生成目标指令
+做窥孔优化</code></pre>
+</article></div></section>
+  </main>
+  <script>
+    const tabs=Array.from(document.querySelectorAll('.answer-tab')); const panels=Array.from(document.querySelectorAll('.answer-panel'));
+    function activate(target) { tabs.forEach((tab)=>tab.classList.toggle('is-active',tab.dataset.target===target)); panels.forEach((panel)=>panel.classList.toggle('is-active',panel.dataset.panel===target)); const panel=document.querySelector(`[data-panel="${target}"]`); if(panel) { history.replaceState(null,'',`#${target}`); panel.focus({preventScroll:true}); } }
+    tabs.forEach((tab)=>{ tab.addEventListener('click',()=>activate(tab.dataset.target)); }); const initial=decodeURIComponent(location.hash.slice(1)); if(initial&&document.querySelector(`[data-panel="${initial}"]`)) activate(initial);
+  </script>
+</body>
+</html>
