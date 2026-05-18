@@ -125,6 +125,12 @@
       box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
     }
 
+    .search:disabled {
+      color: var(--muted);
+      background: #f3f0e8;
+      cursor: not-allowed;
+    }
+
     .view-switch {
       display: inline-flex;
       gap: 4px;
@@ -153,9 +159,14 @@
       outline: none;
     }
 
-    .view-chip.primary {
+    .view-chip.primary,
+    .view-chip.is-active {
       background: var(--teal-soft);
       color: #0f5f59;
+    }
+
+    .page-view[hidden] {
+      display: none;
     }
 
     .layout {
@@ -570,7 +581,7 @@
 
     .answers-frame {
       width: 100%;
-      height: min(82vh, 920px);
+      height: calc(100vh - 190px);
       min-height: 620px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -591,6 +602,26 @@
       margin: 0;
       color: var(--muted);
       font-size: 14px;
+    }
+
+    .answers-page {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 20px 72px;
+    }
+
+    .answers-page-shell {
+      padding: 24px;
+      background: rgba(255, 253, 248, 0.97);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .answers-page-shell h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.18;
     }
 
     .tag-row {
@@ -1173,13 +1204,13 @@
       </a>
       <input class="search" id="search" type="search" placeholder="搜索：FIRST、LR、DFA、三地址码、活动记录..." aria-label="搜索页面内容">
       <nav class="view-switch" aria-label="页面切换">
-        <a class="view-chip" href="#top">导读</a>
-        <a class="view-chip primary" href="#answers">习题答案</a>
+        <a class="view-chip is-active" href="#top" data-view-link="guide">导读</a>
+        <a class="view-chip" href="#answers" data-view-link="answers">习题答案</a>
       </nav>
     </div>
   </header>
 
-  <main id="top" class="layout">
+  <main id="top" class="layout page-view" data-page-view="guide">
     <aside class="sidebar">
       <nav class="toc" aria-label="章节导航">
         <h2>目录</h2>
@@ -1195,8 +1226,7 @@
         <a href="#optimization">10. 代码优化</a>
         <a href="#codegen">11. 代码生成</a>
         <a href="#exam">12. 做题路线</a>
-        <a href="#answers">13. 例题答案</a>
-        <a href="#pitfalls">14. 易错点</a>
+        <a href="#pitfalls">13. 易错点</a>
       </nav>
 
       <div class="study-card">
@@ -2698,20 +2728,8 @@ MOV R0, d</code></pre>
         </div>
       </section>
 
-      <section id="answers" data-title="例题 练习题 答案 解析 截图 tab 刷题 文法 DFA LL1 LR 三地址码">
-        <h2>13. 例题答案：按章节切换刷题</h2>
-        <p class="section-kicker">首页内容保持不变；点击顶部“习题答案”后，在这里直接切换章节 tab，看截图、标准答案和解析。</p>
-
-        <div class="answers-toolbar">
-          <p>覆盖 33 张课件截图，以及文法、DFA、LL(1)、LR、属性文法、三地址码、活动记录、优化、代码生成等题型。</p>
-          <a class="learn-more" href="#top">回到导读</a>
-        </div>
-
-        <iframe class="answers-frame" src="例题答案解析.html?embed=1" title="编译原理例题与练习题答案解析"></iframe>
-      </section>
-
       <section id="pitfalls" data-title="易错点 复习清单 句子 句型 FOLLOW 增广文法 FIRSTOP LASTOP 冲突">
-        <h2>14. 易错点清单</h2>
+        <h2>13. 易错点清单</h2>
         <p class="section-kicker">这些点在原笔记里反复出现，适合考前单独过一遍。</p>
 
         <div class="callout-list">
@@ -2778,6 +2796,21 @@ MOV R0, d</code></pre>
         文件来源：当前目录下的三份编译原理 Word 笔记与 chapter1-2026 到 chapter11-2026 PDF 课件。页面可直接在浏览器打开，也可使用浏览器打印为 PDF。
       </footer>
     </div>
+  </main>
+
+  <main id="answers" class="answers-page page-view" data-page-view="answers" hidden>
+    <section class="answers-page-shell" data-title="例题 练习题 答案 解析 截图 tab 刷题 文法 DFA LL1 LR 三地址码">
+      <span class="eyebrow">习题答案</span>
+      <h1>例题与练习题答案解析</h1>
+      <p class="section-kicker">这里是独立的习题视图，不占用导读正文位置。章节、截图、答案和解析都在下方 tab 中切换。</p>
+
+      <div class="answers-toolbar">
+        <p>覆盖 33 张课件截图，以及文法、DFA、LL(1)、LR、属性文法、三地址码、活动记录、优化、代码生成等题型。</p>
+        <a class="learn-more" href="#top" data-view-link="guide">回到导读</a>
+      </div>
+
+      <iframe class="answers-frame" src="例题答案解析.html?embed=1" title="编译原理例题与练习题答案解析"></iframe>
+    </section>
   </main>
 
   <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
@@ -3052,12 +3085,71 @@ MOV R0, d</code></pre>
     };
 
     const searchInput = document.getElementById("search");
-    const sections = Array.from(document.querySelectorAll("section"));
+    const guideView = document.querySelector('[data-page-view="guide"]');
+    const answersView = document.querySelector('[data-page-view="answers"]');
+    const viewLinks = Array.from(document.querySelectorAll("[data-view-link]"));
+    const sections = Array.from(document.querySelectorAll('[data-page-view="guide"] section'));
     const modal = document.getElementById("detailModal");
     const modalTitle = document.getElementById("modalTitle");
     const modalBody = document.getElementById("modalBody");
     const modalClose = document.getElementById("modalClose");
     let lastFocused = null;
+
+    function updateViewControls(activeView) {
+      viewLinks.forEach((link) => {
+        const isActive = link.dataset.viewLink === activeView;
+        link.classList.toggle("is-active", isActive);
+        if (isActive) {
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+
+      if (searchInput) {
+        const isAnswers = activeView === "answers";
+        searchInput.disabled = isAnswers;
+        searchInput.placeholder = isAnswers
+          ? "当前是习题答案页，切回导读后可搜索知识点"
+          : "搜索：FIRST、LR、DFA、三地址码、活动记录...";
+      }
+    }
+
+    function setPageView(activeView, options = {}) {
+      const view = activeView === "answers" ? "answers" : "guide";
+      const isAnswers = view === "answers";
+
+      guideView.hidden = isAnswers;
+      answersView.hidden = !isAnswers;
+      updateViewControls(view);
+
+      if (options.updateHash) {
+        history.pushState(null, "", isAnswers ? "#answers" : "#top");
+      }
+
+      if (options.scrollTop) {
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }
+    }
+
+    viewLinks.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        setPageView(link.dataset.viewLink, { updateHash: true, scrollTop: true });
+      });
+    });
+
+    window.addEventListener("hashchange", () => {
+      setPageView(location.hash === "#answers" ? "answers" : "guide", {
+        updateHash: false,
+        scrollTop: location.hash === "#answers"
+      });
+    });
+
+    setPageView(location.hash === "#answers" ? "answers" : "guide", {
+      updateHash: false,
+      scrollTop: location.hash === "#answers"
+    });
 
     searchInput.addEventListener("input", () => {
       const query = searchInput.value.trim().toLowerCase();
