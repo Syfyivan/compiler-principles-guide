@@ -1364,9 +1364,61 @@ y := 2</code></pre>
 </article></div></section>
   </main>
   <script>
-    const tabs=Array.from(document.querySelectorAll('.answer-tab')); const panels=Array.from(document.querySelectorAll('.answer-panel'));
-    function activate(target) { tabs.forEach((tab)=>tab.classList.toggle('is-active',tab.dataset.target===target)); panels.forEach((panel)=>panel.classList.toggle('is-active',panel.dataset.panel===target)); const panel=document.querySelector(`[data-panel="${target}"]`); if(panel) { history.replaceState(null,'',`#${target}`); panel.focus({preventScroll:true}); } }
-    tabs.forEach((tab)=>{ tab.addEventListener('click',()=>activate(tab.dataset.target)); }); const initial=decodeURIComponent(location.hash.slice(1)); if(initial&&document.querySelector(`[data-panel="${initial}"]`)) activate(initial);
+    const tabs = Array.from(document.querySelectorAll('.answer-tab'));
+    const panels = Array.from(document.querySelectorAll('.answer-panel'));
+    const panelScroll = {};
+    let activeTarget = document.querySelector('.answer-tab.is-active')?.dataset.target || tabs[0]?.dataset.target;
+
+    function getPanelTop(panel) {
+      return panel.getBoundingClientRect().top + window.scrollY;
+    }
+
+    function rememberPanelPosition() {
+      const panel = document.querySelector(`[data-panel="${activeTarget}"]`);
+      if (!panel) return;
+      panelScroll[activeTarget] = Math.max(0, window.scrollY - getPanelTop(panel));
+    }
+
+    function restorePanelPosition(target) {
+      const panel = document.querySelector(`[data-panel="${target}"]`);
+      if (!panel) return;
+      const offset = panelScroll[target] || 0;
+      requestAnimationFrame(() => {
+        const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+        document.documentElement.style.scrollBehavior = 'auto';
+        window.scrollTo({ top: getPanelTop(panel) + offset, behavior: 'auto' });
+        document.documentElement.style.scrollBehavior = previousScrollBehavior;
+      });
+    }
+
+    function activate(target, options = {}) {
+      if (!target || target === activeTarget) return;
+      if (options.remember !== false) {
+        rememberPanelPosition();
+      }
+
+      tabs.forEach((tab) => tab.classList.toggle('is-active', tab.dataset.target === target));
+      panels.forEach((panel) => panel.classList.toggle('is-active', panel.dataset.panel === target));
+      activeTarget = target;
+
+      const panel = document.querySelector(`[data-panel="${target}"]`);
+      if (panel) {
+        history.replaceState(null, '', `#${target}`);
+        panel.focus({ preventScroll: true });
+        if (options.restore !== false) {
+          restorePanelPosition(target);
+        }
+      }
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => activate(tab.dataset.target));
+    });
+
+    const initial = decodeURIComponent(location.hash.slice(1));
+    if (initial && document.querySelector(`[data-panel="${initial}"]`)) {
+      activate(initial, { remember: false, restore: false });
+    }
   </script>
 </body>
 </html>

@@ -3094,6 +3094,11 @@ MOV R0, d</code></pre>
     const modalBody = document.getElementById("modalBody");
     const modalClose = document.getElementById("modalClose");
     let lastFocused = null;
+    let currentView = null;
+    const viewScroll = {
+      guide: 0,
+      answers: 0
+    };
 
     function updateViewControls(activeView) {
       viewLinks.forEach((link) => {
@@ -3115,40 +3120,66 @@ MOV R0, d</code></pre>
       }
     }
 
+    function rememberCurrentViewPosition() {
+      if (currentView) {
+        viewScroll[currentView] = window.scrollY;
+      }
+    }
+
+    function restoreViewPosition(view) {
+      const top = viewScroll[view] || 0;
+      requestAnimationFrame(() => {
+        const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+        document.documentElement.style.scrollBehavior = "auto";
+        window.scrollTo({ top, behavior: "auto" });
+        document.documentElement.style.scrollBehavior = previousScrollBehavior;
+      });
+    }
+
     function setPageView(activeView, options = {}) {
       const view = activeView === "answers" ? "answers" : "guide";
       const isAnswers = view === "answers";
 
+      if (options.remember !== false && currentView && currentView !== view) {
+        rememberCurrentViewPosition();
+      }
+
       guideView.hidden = isAnswers;
       answersView.hidden = !isAnswers;
+      currentView = view;
       updateViewControls(view);
 
       if (options.updateHash) {
         history.pushState(null, "", isAnswers ? "#answers" : "#top");
       }
 
-      if (options.scrollTop) {
-        window.scrollTo({ top: 0, behavior: "auto" });
+      if (options.restore !== false) {
+        restoreViewPosition(view);
       }
     }
 
     viewLinks.forEach((link) => {
       link.addEventListener("click", (event) => {
         event.preventDefault();
-        setPageView(link.dataset.viewLink, { updateHash: true, scrollTop: true });
+        setPageView(link.dataset.viewLink, { updateHash: true });
       });
     });
 
     window.addEventListener("hashchange", () => {
-      setPageView(location.hash === "#answers" ? "answers" : "guide", {
-        updateHash: false,
-        scrollTop: location.hash === "#answers"
-      });
+      if (location.hash === "#answers") {
+        setPageView("answers", { updateHash: false });
+        return;
+      }
+
+      if (currentView === "answers") {
+        setPageView("guide", { updateHash: false });
+      }
     });
 
     setPageView(location.hash === "#answers" ? "answers" : "guide", {
       updateHash: false,
-      scrollTop: location.hash === "#answers"
+      remember: false,
+      restore: location.hash === "#answers"
     });
 
     searchInput.addEventListener("input", () => {
