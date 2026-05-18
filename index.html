@@ -228,7 +228,9 @@
       background: var(--teal-soft);
       color: #064e3b;
       font-weight: 800;
-      box-shadow: inset 3px 0 0 var(--teal);
+      box-shadow:
+        inset 4px 0 0 var(--teal),
+        0 6px 16px rgba(15, 118, 110, 0.12);
     }
 
     .study-card,
@@ -3109,14 +3111,18 @@ MOV R0, d</code></pre>
     let isSwitchingView = false;
     let scrollSaveFrame = 0;
     let tocFrame = 0;
+    let pendingTocId = "";
+    let pendingTocTimer = 0;
     const viewScrollKeys = {
       guide: "compiler-guide:view-scroll:guide",
       answers: "compiler-guide:view-scroll:answers"
     };
+    const activeTocKey = "compiler-guide:active-toc";
     const viewScroll = {
       guide: Number(sessionStorage.getItem("compiler-guide:view-scroll:guide")) || 0,
       answers: Number(sessionStorage.getItem("compiler-guide:view-scroll:answers")) || 0
     };
+    let activeTocId = localStorage.getItem(activeTocKey) || "";
 
     function updateViewControls(activeView) {
       viewLinks.forEach((link) => {
@@ -3186,12 +3192,21 @@ MOV R0, d</code></pre>
 
       if (options.restore !== false) {
         restoreViewPosition(view);
-      } else {
+      } else if (options.updateToc !== false) {
         updateActiveToc();
       }
     }
 
-    function setActiveToc(id) {
+    function setActiveToc(id, options = {}) {
+      if (!id || !tocById.has(id)) {
+        return;
+      }
+
+      activeTocId = id;
+      if (options.persist !== false) {
+        localStorage.setItem(activeTocKey, id);
+      }
+
       tocLinks.forEach((link) => {
         const isActive = decodeURIComponent(link.hash.slice(1)) === id;
         link.classList.toggle("is-active", isActive);
@@ -3205,7 +3220,9 @@ MOV R0, d</code></pre>
 
     function updateActiveToc() {
       if (currentView !== "guide") {
-        setActiveToc("");
+        return;
+      }
+      if (pendingTocId) {
         return;
       }
 
@@ -3246,6 +3263,13 @@ MOV R0, d</code></pre>
       });
     }
 
+    const initialGuideHash = decodeURIComponent(location.hash.slice(1));
+    if (initialGuideHash && tocById.has(initialGuideHash)) {
+      setActiveToc(initialGuideHash);
+    } else if (activeTocId && tocById.has(activeTocId)) {
+      setActiveToc(activeTocId, { persist: false });
+    }
+
     viewLinks.forEach((link) => {
       link.addEventListener("click", (event) => {
         event.preventDefault();
@@ -3264,12 +3288,26 @@ MOV R0, d</code></pre>
 
     tocLinks.forEach((link) => {
       link.addEventListener("click", () => {
-        setActiveToc(decodeURIComponent(link.hash.slice(1)));
+        const targetId = decodeURIComponent(link.hash.slice(1));
+        pendingTocId = targetId;
+        clearTimeout(pendingTocTimer);
+        setActiveToc(targetId);
+        pendingTocTimer = setTimeout(() => {
+          pendingTocId = "";
+          updateActiveToc();
+        }, 2400);
       });
     });
 
     window.addEventListener("scroll", () => {
       rememberScrollFromEvent();
+      if (pendingTocId) {
+        clearTimeout(pendingTocTimer);
+        pendingTocTimer = setTimeout(() => {
+          pendingTocId = "";
+          updateActiveToc();
+        }, 180);
+      }
       requestActiveTocUpdate();
     }, { passive: true });
 
@@ -3281,8 +3319,16 @@ MOV R0, d</code></pre>
         return;
       }
 
+      const guideHash = decodeURIComponent(location.hash.slice(1));
+      if (tocById.has(guideHash)) {
+        if (currentView === "answers") {
+          setPageView("guide", { updateHash: false, restore: false, updateToc: false });
+        }
+        setActiveToc(guideHash);
+        return;
+      }
+
       if (currentView === "answers") {
-        const guideHash = decodeURIComponent(location.hash.slice(1));
         const shouldRestore = !guideHash || guideHash === "top" || !tocById.has(guideHash);
         setPageView("guide", { updateHash: false, restore: shouldRestore });
       }
@@ -3291,7 +3337,8 @@ MOV R0, d</code></pre>
     setPageView(location.hash === "#answers" ? "answers" : "guide", {
       updateHash: false,
       remember: false,
-      restore: location.hash === "#answers"
+      restore: location.hash === "#answers",
+      updateToc: !activeTocId
     });
 
     searchInput.addEventListener("input", () => {
