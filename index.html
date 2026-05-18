@@ -590,9 +590,10 @@
     }
 
     .answers-frame {
+      flex: 1 1 auto;
       width: 100%;
-      height: calc(100vh - 190px);
-      min-height: 620px;
+      height: auto;
+      min-height: 0;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--paper);
@@ -617,15 +618,22 @@
     .answers-page {
       max-width: var(--max);
       margin: 0 auto;
-      padding: 28px 20px 72px;
+      height: calc(100dvh - 68px);
+      padding: 20px;
+      overflow: hidden;
     }
 
     .answers-page-shell {
-      padding: 24px;
+      height: 100%;
+      margin-top: 0;
+      padding: 20px;
       background: rgba(255, 253, 248, 0.97);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
     .answers-page-shell h1 {
@@ -1150,8 +1158,7 @@
       }
 
       .answers-frame {
-        height: 78vh;
-        min-height: 540px;
+        min-height: 0;
       }
 
       .modal {
