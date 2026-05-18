@@ -174,8 +174,8 @@
       margin: 0 auto;
       padding: 28px 20px 72px;
       display: grid;
-      grid-template-columns: 245px minmax(0, 1fr);
-      gap: 28px;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 18px;
       align-items: start;
     }
 
@@ -223,6 +223,14 @@
       color: #064e3b;
     }
 
+    .toc a.is-active,
+    .toc a[aria-current="location"] {
+      background: var(--teal-soft);
+      color: #064e3b;
+      font-weight: 800;
+      box-shadow: inset 3px 0 0 var(--teal);
+    }
+
     .study-card,
     .check-card {
       padding: 14px;
@@ -263,7 +271,7 @@
     }
 
     .hero-copy {
-      padding: 34px;
+      padding: 30px;
       min-width: 0;
     }
 
@@ -282,7 +290,7 @@
 
     h1 {
       margin: 16px 0 12px;
-      font-size: 40px;
+      font-size: 36px;
       line-height: 1.12;
       letter-spacing: 0;
       overflow-wrap: anywhere;
@@ -291,7 +299,7 @@
     .lead {
       color: #4b5563;
       font-size: 17px;
-      max-width: 58ch;
+      max-width: 68ch;
       margin: 0;
     }
 
@@ -365,8 +373,8 @@
     }
 
     section {
-      margin-top: 28px;
-      padding: 28px;
+      margin-top: 18px;
+      padding: 24px;
       background: rgba(255, 253, 248, 0.97);
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -3089,15 +3097,25 @@ MOV R0, d</code></pre>
     const answersView = document.querySelector('[data-page-view="answers"]');
     const viewLinks = Array.from(document.querySelectorAll("[data-view-link]"));
     const sections = Array.from(document.querySelectorAll('[data-page-view="guide"] section'));
+    const tocLinks = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+    const tocById = new Map(tocLinks.map((link) => [decodeURIComponent(link.hash.slice(1)), link]));
+    const brandLink = document.querySelector(".brand");
     const modal = document.getElementById("detailModal");
     const modalTitle = document.getElementById("modalTitle");
     const modalBody = document.getElementById("modalBody");
     const modalClose = document.getElementById("modalClose");
     let lastFocused = null;
     let currentView = null;
+    let isSwitchingView = false;
+    let scrollSaveFrame = 0;
+    let tocFrame = 0;
+    const viewScrollKeys = {
+      guide: "compiler-guide:view-scroll:guide",
+      answers: "compiler-guide:view-scroll:answers"
+    };
     const viewScroll = {
-      guide: 0,
-      answers: 0
+      guide: Number(sessionStorage.getItem("compiler-guide:view-scroll:guide")) || 0,
+      answers: Number(sessionStorage.getItem("compiler-guide:view-scroll:answers")) || 0
     };
 
     function updateViewControls(activeView) {
@@ -3123,22 +3141,35 @@ MOV R0, d</code></pre>
     function rememberCurrentViewPosition() {
       if (currentView) {
         viewScroll[currentView] = window.scrollY;
+        sessionStorage.setItem(viewScrollKeys[currentView], String(viewScroll[currentView]));
       }
     }
 
     function restoreViewPosition(view) {
       const top = viewScroll[view] || 0;
+      isSwitchingView = true;
       requestAnimationFrame(() => {
         const previousScrollBehavior = document.documentElement.style.scrollBehavior;
         document.documentElement.style.scrollBehavior = "auto";
         window.scrollTo({ top, behavior: "auto" });
         document.documentElement.style.scrollBehavior = previousScrollBehavior;
+        requestAnimationFrame(() => {
+          isSwitchingView = false;
+          viewScroll[view] = window.scrollY;
+          sessionStorage.setItem(viewScrollKeys[view], String(viewScroll[view]));
+          updateActiveToc();
+        });
       });
     }
 
     function setPageView(activeView, options = {}) {
       const view = activeView === "answers" ? "answers" : "guide";
       const isAnswers = view === "answers";
+
+      if (currentView === view) {
+        updateViewControls(view);
+        return;
+      }
 
       if (options.remember !== false && currentView && currentView !== view) {
         rememberCurrentViewPosition();
@@ -3155,7 +3186,64 @@ MOV R0, d</code></pre>
 
       if (options.restore !== false) {
         restoreViewPosition(view);
+      } else {
+        updateActiveToc();
       }
+    }
+
+    function setActiveToc(id) {
+      tocLinks.forEach((link) => {
+        const isActive = decodeURIComponent(link.hash.slice(1)) === id;
+        link.classList.toggle("is-active", isActive);
+        if (isActive) {
+          link.setAttribute("aria-current", "location");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+    }
+
+    function updateActiveToc() {
+      if (currentView !== "guide") {
+        setActiveToc("");
+        return;
+      }
+
+      const marker = 110;
+      let activeId = "";
+      for (const section of sections) {
+        if (section.classList.contains("hidden-by-search")) continue;
+        if (section.getBoundingClientRect().top <= marker) {
+          activeId = section.id;
+        } else {
+          break;
+        }
+      }
+
+      if (!activeId && sections[0]) {
+        activeId = sections[0].id;
+      }
+      setActiveToc(activeId);
+    }
+
+    function requestActiveTocUpdate() {
+      if (tocFrame) return;
+      tocFrame = requestAnimationFrame(() => {
+        tocFrame = 0;
+        updateActiveToc();
+      });
+    }
+
+    function rememberScrollFromEvent() {
+      if (!currentView || isSwitchingView) return;
+      viewScroll[currentView] = window.scrollY;
+      if (scrollSaveFrame) return;
+      scrollSaveFrame = requestAnimationFrame(() => {
+        scrollSaveFrame = 0;
+        if (currentView) {
+          sessionStorage.setItem(viewScrollKeys[currentView], String(viewScroll[currentView]));
+        }
+      });
     }
 
     viewLinks.forEach((link) => {
@@ -3165,6 +3253,28 @@ MOV R0, d</code></pre>
       });
     });
 
+    if (brandLink) {
+      brandLink.addEventListener("click", (event) => {
+        if (currentView === "answers") {
+          event.preventDefault();
+          setPageView("guide", { updateHash: true });
+        }
+      });
+    }
+
+    tocLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        setActiveToc(decodeURIComponent(link.hash.slice(1)));
+      });
+    });
+
+    window.addEventListener("scroll", () => {
+      rememberScrollFromEvent();
+      requestActiveTocUpdate();
+    }, { passive: true });
+
+    window.addEventListener("resize", requestActiveTocUpdate);
+
     window.addEventListener("hashchange", () => {
       if (location.hash === "#answers") {
         setPageView("answers", { updateHash: false });
@@ -3172,7 +3282,9 @@ MOV R0, d</code></pre>
       }
 
       if (currentView === "answers") {
-        setPageView("guide", { updateHash: false });
+        const guideHash = decodeURIComponent(location.hash.slice(1));
+        const shouldRestore = !guideHash || guideHash === "top" || !tocById.has(guideHash);
+        setPageView("guide", { updateHash: false, restore: shouldRestore });
       }
     });
 
@@ -3188,6 +3300,7 @@ MOV R0, d</code></pre>
         const haystack = `${section.dataset.title || ""} ${section.textContent}`.toLowerCase();
         section.classList.toggle("hidden-by-search", query.length > 0 && !haystack.includes(query));
       });
+      updateActiveToc();
     });
 
     const checks = Array.from(document.querySelectorAll("[data-check]"));
