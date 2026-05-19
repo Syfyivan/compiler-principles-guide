@@ -67,7 +67,7 @@
 <button class="answer-tab" type="button" data-target="总题型答案模板">总题型答案模板</button></nav><div class="answer-content"><article class="answer-panel is-active" id="panel-1" data-panel="第-1-章-引论" tabindex="0"><h2 id="第-1-章-引论">第 1 章 引论</h2>
 <h3 id="1-sum1020numsquare-的词法分析">1.
 <code>sum=(10+20)*(num+square);</code> 的词法分析</h3>
-<p><img src="assets/例题截图/ch1-token-sum.png"
+<p><img src="assets/例题截图/ch1-token-sum-question.png"
 alt="第1章 token 示例" /></p>
 <p>答案：</p>
 <pre class="text"><code>(标识符, sum)
@@ -295,7 +295,7 @@ F → 0</code></pre>
 <p>解析：右线性从左往右“预留后续状态”；左线性从右往左构造。</p>
 <h3 id="7-ididid-的语法树最左最右推导">7. <code>id+id*id</code>
 的语法树、最左/最右推导</h3>
-<p><img src="assets/例题截图/ch2-id-tree.png"
+<p><img src="assets/例题截图/ch2-id-tree-question.png"
 alt="第2章 id+id*id 语法树" /></p>
 <p>以文法 <code>E→E+E|E*E|(E)|id</code> 为例，一条最左推导：</p>
 <pre class="text"><code>E ⇒ E+E
@@ -324,7 +324,7 @@ alt="第2章 短语句柄" /></p>
 的子树；句柄是自底向上分析下一步要归约的对象。</p>
 <h3 id="9-二义性证明eeeeeeid">9.
 二义性证明：<code>E→E+E|E*E|(E)|id</code></h3>
-<p><img src="assets/例题截图/ch2-ambiguity.png"
+<p><img src="assets/例题截图/ch2-ambiguity-question.png"
 alt="第2章 二义性" /></p>
 <p>答案：句子 <code>id+id*id</code> 有两种结构：</p>
 <pre class="text"><code>id + (id * id)
@@ -389,7 +389,7 @@ C → c C | ε</code></pre>
 <article class="answer-panel" id="panel-3" data-panel="第-3-章-词法分析" tabindex="0"><h2 id="第-3-章-词法分析">第 3 章 词法分析</h2>
 <h3 id="1-例-31if-count7-then-result--314">1. 例
 3.1：<code>if count&gt;7 then result := 3.14;</code></h3>
-<p><img src="assets/例题截图/ch3-token-if.png"
+<p><img src="assets/例题截图/ch3-token-if-question.png"
 alt="第3章 token 示例" /></p>
 <p>答案：</p>
 <pre class="text"><code>(IF, -)
@@ -575,7 +575,7 @@ A → aA | bA | b</code></pre>
 <p>解析：选择 <code>A→**</code> 可成功；若先试 <code>A→*</code>，得到
 <code>x*y</code>，与输入不符，需要回溯。</p>
 <h3 id="2-表达式文法-first-集">2. 表达式文法 FIRST 集</h3>
-<p><img src="assets/例题截图/ch4-first.png" alt="第4章 FIRST" /></p>
+<p><img src="assets/例题截图/ch4-first-question.png" alt="第4章 FIRST" /></p>
 <p>文法：</p>
 <pre class="text"><code>E  → T E&#39;
 E&#39; → + T E&#39; | ε
@@ -591,7 +591,7 @@ FIRST(E)  = {(, id}</code></pre>
 <p>解析：<code>E</code> 的首符号来自 <code>T</code>，<code>T</code>
 的首符号来自 <code>F</code>。</p>
 <h3 id="3-表达式文法-follow-集">3. 表达式文法 FOLLOW 集</h3>
-<p><img src="assets/例题截图/ch4-follow.png" alt="第4章 FOLLOW" /></p>
+<p><img src="assets/例题截图/ch4-follow-question.png" alt="第4章 FOLLOW" /></p>
 <p>答案：</p>
 <pre class="text"><code>FOLLOW(E)  = {), #}
 FOLLOW(E&#39;) = {), #}
@@ -666,7 +666,7 @@ alt="第4章 递归下降分析器" /></p>
 </article>
 <article class="answer-panel" id="panel-5" data-panel="第-5-章-自底向上语法分析" tabindex="0"><h2 id="第-5-章-自底向上语法分析">第 5 章 自底向上语法分析</h2>
 <h3 id="1-例-51归约-abbcde">1. 例 5.1：归约 <code>abbcde</code></h3>
-<p><img src="assets/例题截图/ch5-reduce.png" alt="第5章 归约过程" /></p>
+<p><img src="assets/例题截图/ch5-reduce-question.png" alt="第5章 归约过程" /></p>
 <p>文法：<code>S→aABe</code>，<code>A→Abc|b</code>，<code>B→d</code>。</p>
 <p>答案：</p>
 <pre class="text"><code>abbcde
@@ -690,7 +690,7 @@ alt="第5章 算符优先关系" /></p>
 <p>解析：算符优先表用于判断何时移进、何时归约。</p>
 <h3 id="3-例-57算符优先分析-idid">3. 例 5.7：算符优先分析
 <code>id+id</code></h3>
-<p><img src="assets/例题截图/ch5-op-analysis.png"
+<p><img src="assets/例题截图/ch5-op-analysis-question.png"
 alt="第5章 算符优先分析" /></p>
 <p>核心过程：</p>
 <pre class="text"><code># id + id #
@@ -862,7 +862,7 @@ alt="第6章 依赖图" /></p>
 </ol>
 <p>解析：有环说明属性定义不能按普通依赖顺序求值。</p>
 <h3 id="3-ast-构造3xy">3. AST 构造：<code>3*x/y</code></h3>
-<p><img src="assets/例题截图/ch6-ast.png" alt="第6章 AST" /></p>
+<p><img src="assets/例题截图/ch6-ast-question.png" alt="第6章 AST" /></p>
 <p>答案：</p>
 <pre class="text"><code>      /
      / \
@@ -1001,7 +1001,7 @@ DAG</h3>
 <p>解析：每登记一个名字，当前 offset 是它的相对地址，然后
 <code>offset += width</code>。</p>
 <h3 id="5-数组地址计算">5. 数组地址计算</h3>
-<p><img src="assets/例题截图/ch7-array.png" alt="第7章 数组寻址" /></p>
+<p><img src="assets/例题截图/ch7-array-question.png" alt="第7章 数组寻址" /></p>
 <p>题：<code>A[1:3,0:4]</code>，行优先，元素宽度 4。</p>
 <p>答案：</p>
 <pre class="text"><code>位移(A[i,j]) = ((i-1)*5 + (j-0))*4
@@ -1033,7 +1033,7 @@ x := 2
 Lnext:</code></pre>
 <p>解析：then 分支结束后必须跳过 else 分支。</p>
 <h3 id="8-例-710while--if-else">8. 例 7.10：while + if-else</h3>
-<p><img src="assets/例题截图/ch7-ifwhile.png"
+<p><img src="assets/例题截图/ch7-ifwhile-question.png"
 alt="第7章 if while 翻译" /></p>
 <p>题：<code>while a &lt; b do if c &lt; d then x := y+z else x := y-z</code></p>
 <p>答案：</p>
@@ -1065,7 +1065,7 @@ y := t2</code></pre>
 的实参数一致；若调用约定要求逆序压参，<code>param</code>
 顺序随约定调整。</p>
 <h3 id="10-回填式翻译">10. 回填式翻译</h3>
-<p><img src="assets/例题截图/ch7-backpatch.png" alt="第7章 回填" /></p>
+<p><img src="assets/例题截图/ch7-backpatch-question.png" alt="第7章 回填" /></p>
 <p>答案要点：</p>
 <ul>
 <li><code>makelist(i)</code>：创建只含跳转指令 <code>i</code>
